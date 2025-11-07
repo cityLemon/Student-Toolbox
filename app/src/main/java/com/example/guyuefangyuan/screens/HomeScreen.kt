@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Note
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -77,7 +78,8 @@ data class FeatureItem(
 fun HomeScreen(
     onNavigateToCalculator: () -> Unit,
     onNavigateToNotes: () -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    onNavigateToPomodoro: () -> Unit
 ) {
     val context = LocalContext.current
     val userPreferences = UserPreferences(context)
@@ -95,6 +97,12 @@ fun HomeScreen(
             icon = Icons.Default.Note,
             color = Color(0xFF9C27B0),
             onClick = onNavigateToNotes
+        ),
+        FeatureItem(
+            title = "番茄钟",
+            icon = Icons.Default.Timer,
+            color = Color(0xFFFF5722),
+            onClick = onNavigateToPomodoro
         ),
         FeatureItem(
             title = "个人资料",

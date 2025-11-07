@@ -8,6 +8,9 @@ import com.example.guyuefangyuan.screens.CalculatorScreen
 import com.example.guyuefangyuan.screens.HomeScreen
 import com.example.guyuefangyuan.screens.LoginScreen
 import com.example.guyuefangyuan.screens.NotesScreen
+import com.example.guyuefangyuan.screens.PomodoroTimerScreen
+import com.example.guyuefangyuan.screens.PomodoroSettingsScreen
+import com.example.guyuefangyuan.screens.PomodoroStatisticsScreen
 import com.example.guyuefangyuan.screens.ProfileScreen
 import com.example.guyuefangyuan.screens.RegisterScreen
 
@@ -19,6 +22,9 @@ object NavRoute {
     const val CALCULATOR = "calculator"
     const val NOTES = "notes"
     const val PROFILE = "profile"
+    const val POMODORO = "pomodoro"
+    const val POMODORO_SETTINGS = "pomodoro_settings"
+    const val POMODORO_STATISTICS = "pomodoro_statistics"
 }
 
 @Composable
@@ -51,7 +57,8 @@ fun NavGraph(navController: NavHostController, startDestination: String = NavRou
             HomeScreen(
                 onNavigateToCalculator = { navController.navigate(NavRoute.CALCULATOR) },
                 onNavigateToNotes = { navController.navigate(NavRoute.NOTES) },
-                onNavigateToProfile = { navController.navigate(NavRoute.PROFILE) }
+                onNavigateToProfile = { navController.navigate(NavRoute.PROFILE) },
+                onNavigateToPomodoro = { navController.navigate(NavRoute.POMODORO) }
             )
         }
         
@@ -73,6 +80,26 @@ fun NavGraph(navController: NavHostController, startDestination: String = NavRou
                 onLogout = { navController.navigate(NavRoute.LOGIN) {
                     popUpTo(NavRoute.HOME) { inclusive = true }
                 }}
+            )
+        }
+        
+        composable(NavRoute.POMODORO) {
+            PomodoroTimerScreen(
+                onNavigateBack = { navController.navigateUp() },
+                onNavigateToSettings = { navController.navigate(NavRoute.POMODORO_SETTINGS) },
+                onNavigateToStatistics = { navController.navigate(NavRoute.POMODORO_STATISTICS) }
+            )
+        }
+        
+        composable(NavRoute.POMODORO_SETTINGS) {
+            PomodoroSettingsScreen(
+                onNavigateBack = { navController.navigateUp() }
+            )
+        }
+        
+        composable(NavRoute.POMODORO_STATISTICS) {
+            PomodoroStatisticsScreen(
+                onNavigateBack = { navController.navigateUp() }
             )
         }
     }
