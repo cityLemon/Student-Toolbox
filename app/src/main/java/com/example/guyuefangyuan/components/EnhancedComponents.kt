@@ -1,12 +1,15 @@
 package com.example.guyuefangyuan.components
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -272,48 +277,62 @@ fun EnhancedGradientButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val buttonScale by animateFloatAsState(
+        targetValue = if (isPressed) 0.98f else 1f,
+        animationSpec = tween(durationMillis = 100)
+    )
     
-    Button(
-        onClick = onClick,
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
+            .scale(buttonScale)
             .shadow(
-                elevation = animateDpAsState(if (isPressed) 2.dp else 8.dp).value,
+                elevation = animateDpAsState(if (isPressed) 4.dp else 8.dp).value,
                 shape = RoundedCornerShape(16.dp),
                 clip = false
+            )
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = if (enabled) listOf(GradientStart, GradientEnd) 
+                            else listOf(Color.Gray, Color.DarkGray)
+                ),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(
+                enabled = enabled && !isLoading,
+                onClick = onClick,
+                interactionSource = interactionSource,
+                indication = null
             ),
-        enabled = enabled && !isLoading,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent
-        ),
-        shape = RoundedCornerShape(16.dp),
-        interactionSource = interactionSource
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(GradientStart, GradientEnd)
-                    ),
-                    shape = RoundedCornerShape(16.dp)
+        if (isLoading) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
                 )
-                .clip(RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            if (isLoading) {
-                // 加载动画可以在这里添加
-                Text("加载中...", color = Color.White)
-            } else {
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = text,
+                    text = "加载中...",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
             }
+        } else {
+            Text(
+                text = text,
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }
